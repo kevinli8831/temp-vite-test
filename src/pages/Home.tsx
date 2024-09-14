@@ -63,7 +63,6 @@ const Home = () => {
     setPickNumberIndex(listIndex);
   };
   const getColor = (number: number) => {
-    // const colors = ['red', 'blue', 'green'];
     switch (number) {
       case 1:
       case 2:
