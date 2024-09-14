@@ -45,31 +45,6 @@ const Home = () => {
     } else {
       setPickNumberList((prevList) => prevList.map((list, index) => (index === pickNumberIndex ? [...list, newNumber] : list)));
     }
-    // if (pickNumberList.length === 0 || pickNumberList[pickNumberIndex].length === 6) {
-    //   console.log('debug??');
-    //   // add new list
-    //   const prevListSize: number = pickNumberList.length === 0 ? 1 : pickNumberList.length ;
-    //   if (pickNumberList[prevListSize - 1].length === 6) {
-    //     setPickNumberList((prevList) => [...prevList, [newNumber]]);
-    //     setPickNumberIndex(prevListSize);
-    //   } else {
-    //     setPickNumberIndex(prevListSize - 1);
-    //     // setPickNumberList((prevList) => prevList.map((list, index) => (index === pickNumberIndex ? [...list, newNumber] : list)));
-    //   }
-    // } else {
-    //   const pickNumberListByIndex = pickNumberList[pickNumberIndex];
-    //   // check last list
-    //   console.log(pickNumberIndex, 'pickNumberIndex');
-    //   if (pickNumberListByIndex.includes(newNumber)) {
-    //     // delete the item in the last list
-    //     setPickNumberList((prevList) =>
-    //       prevList.map((list, index) => (index === pickNumberIndex ? list.filter((item) => item !== newNumber) : list)),
-    //     );
-    //   } else {
-    //     // add in the last list
-    //     setPickNumberList((prevList) => prevList.map((list, index) => (index === pickNumberIndex ? [...list, newNumber] : list)));
-    //   }
-    // }
   };
   const handleDeleteList = (listIndex: number) => {
     setPickNumberList((list) => {
