@@ -1,9 +1,118 @@
+import { Container } from '@mui/material';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid2';
+import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import arrowDown from '../assets/arrowDown.svg';
+import arrowUp from '../assets/arrowUp.svg';
 import { ITabList } from '../types';
 
 const Home = () => {
+  // const [mode, setMode] = useState<number>(1);
+  const [openTip, setOpenTip] = useState<boolean>(false);
+  const generateArray = (aroundNumber: number) => [...Array(aroundNumber).keys()].map((i) => i + 1);
+  const [pickNumberList, setPickNumberList] = useState<number[][]>([[]]);
+  const [pickNumberIndex, setPickNumberIndex] = useState<number>(0);
+  // console.log(pickNumberList, 'pickNumberList');
+  console.log(pickNumberIndex, 'pickNumberIndex outside');
+  const getImageURL = (name: number) => {
+    return new URL(`../assets/marksixs/marksix-${name}.svg`, import.meta.url).href;
+  };
+
+  const handleNumber = (newNumber: number) => {
+    if (pickNumberList.length === 0 || pickNumberList[pickNumberIndex].length === 6) {
+      console.log('debug??');
+      // add new list
+      const prevListSize: number = pickNumberList.length;
+      if (pickNumberList[prevListSize - 1].length === 6) {
+        setPickNumberList((prevList) => [...prevList, [newNumber]]);
+        setPickNumberIndex(prevListSize);
+      } else{
+        setPickNumberIndex(prevListSize - 1)
+        // setPickNumberList((prevList) => prevList.map((list, index) => (index === pickNumberIndex ? [...list, newNumber] : list)));
+}
+    } else {
+      const pickNumberListByIndex = pickNumberList[pickNumberIndex];
+      // check last list
+      console.log(pickNumberIndex, 'pickNumberIndex');
+      if (pickNumberListByIndex.includes(newNumber)) {
+        // delete the item in the last list
+        setPickNumberList((prevList) =>
+          prevList.map((list, index) => (index === pickNumberIndex ? list.filter((item) => item !== newNumber) : list)),
+        );
+      } else {
+        // add in the last list
+        setPickNumberList((prevList) => prevList.map((list, index) => (index === pickNumberIndex ? [...list, newNumber] : list)));
+      }
+    }
+  };
+  const handleDeleteNumber = (newNumber: number, listIndex: number, index: number) => {
+    setPickNumberList((prevList) =>
+      prevList.map((list, index) => (index === listIndex ? list.filter((item) => item !== newNumber) : list)),
+    );
+    setPickNumberIndex(listIndex);
+  };
+  const getColor = (number: number) => {
+    // const colors = ['red', 'blue', 'green'];
+    switch (number) {
+      case 1:
+      case 2:
+      case 7:
+      case 8:
+      case 18:
+      case 19:
+      case 29:
+      case 30:
+      case 40:
+      case 12:
+      case 13:
+      case 23:
+      case 24:
+      case 34:
+      case 35:
+      case 45:
+      case 46:
+        return 'tw-border-red-700';
+      case 3:
+      case 4:
+      case 9:
+      case 10:
+      case 14:
+      case 15:
+      case 20:
+      case 25:
+      case 26:
+      case 31:
+      case 36:
+      case 37:
+      case 41:
+      case 42:
+      case 47:
+      case 48:
+        return 'tw-border-blue-700';
+        break;
+      case 5:
+      case 6:
+      case 11:
+      case 16:
+      case 17:
+      case 21:
+      case 22:
+      case 27:
+      case 28:
+      case 32:
+      case 33:
+      case 38:
+      case 39:
+      case 43:
+      case 44:
+      case 49:
+        return 'tw-border-green-700';
+        break;
+      default:
+        break;
+    }
+  };
   const InnerHeader = () => {
     const tabList: ITabList[] = [
       { text: '主頁', route: '/home' },
@@ -41,49 +150,145 @@ const Home = () => {
         <Grid size={9.5}>
           <InnerHeader />
           <Box className={'tw-grid tw-grid-cols-5 tw-pt-5 tw-gap-2'}>
-            <Box className={'tw-col-span-1 tw-flex tw-flex-col tw-bg-white tw-rounded-md'}>
+            {/* SideMenu */}
+            <Box className={'tw-col-span-1 tw-flex tw-flex-col tw-bg-white tw-rounded-md tw-max-h-[240px]'}>
               <Box className={`tw-flex-grow tw-p-2 tw-text-green-800 tw-font-bold`}>下期攪珠</Box>
-              <Box
-                className={`tw-cursor-pointer hover:tw-bg-green-800 hover:tw-text-white tw-font-bold tw-flex-grow tw-p-2 tw-border-b tw-border-gray-200`}>
+              <button
+                onClick={() => console.log('asdadadadadada')}
+                className={`tw-text-left hover:tw-bg-green-800 hover:tw-text-white tw-font-bold tw-flex-grow tw-p-2 tw-border-b tw-border-gray-200`}>
                 自選單式
-              </Box>
-              <Box
-                className={`tw-cursor-pointer hover:tw-bg-green-800 hover:tw-text-white tw-font-bold tw-flex-grow tw-p-2 tw-border-b tw-border-gray-200`}>
+              </button>
+              <button
+                onClick={() => null}
+                className={`tw-text-left hover:tw-bg-green-800 hover:tw-text-white tw-font-bold tw-flex-grow tw-p-2 tw-border-b tw-border-gray-200`}>
                 自選複式
-              </Box>
-              <Box
-                className={`tw-cursor-not-allowed hover:tw-bg-green-800 hover:tw-text-white tw-font-bold tw-flex-grow tw-p-2 tw-border-b tw-border-gray-200`}>
+              </button>
+              <button
+                onClick={() => null}
+                disabled
+                className={`tw-text-left tw-cursor-not-allowed hover:tw-bg-green-800 hover:tw-text-white tw-font-bold tw-flex-grow tw-p-2 tw-border-b tw-border-gray-200`}>
                 自選膽拖
-              </Box>
-              <Box className={`tw-cursor-not-allowed hover:tw-bg-green-800 hover:tw-text-white tw-font-bold tw-flex-grow tw-p-2`}>運財號碼</Box>
+              </button>
+              <button
+                onClick={() => console.log('asdasda')}
+                disabled
+                className={`tw-text-left tw-cursor-not-allowed hover:tw-bg-green-800 hover:tw-text-white tw-font-bold tw-flex-grow tw-p-2`}>
+                運財號碼
+              </button>
             </Box>
-
-            <Box className={'tw-col-span-4 tw-gap-2'}>
-              <Box className={`tw-bg-green-800 tw-text-white tw-p-2 tw-font-bold tw-text-xl tw-rounded-t-md`}>運財號碼 (金多寶)</Box>
-              <Box className={`tw-grid-cols-2 tw-grid tw-bg-white tw-py-2 tw-rounded-b-md`}>
-                <Box>
-                  <Box className={`tw-px-2 tw-flex tw-py-1`}>
-                    <Box className={`tw-flex-1 tw-font-bold`}>金多寶攪珠期數</Box>
-                    <Box className={`tw-flex-1 tw-font-bold`}>b</Box>
+            {/* SideMenu */}
+            {/* Main */}
+            <main className={'tw-col-span-4 tw-gap-2'}>
+              {/* infoTable */}
+              <Box>
+                <Box className={`tw-bg-green-800 tw-text-white tw-p-2 tw-font-bold tw-text-xl tw-rounded-t-md`}>{} (金多寶)</Box>
+                <Box className={`tw-grid-cols-2 tw-grid tw-bg-white tw-py-2 tw-rounded-b-md`}>
+                  <Box className={`tw-border-r tw-border-b-gray-300`}>
+                    <Box className={`tw-px-2 tw-flex tw-py-1`}>
+                      <Box className={`tw-flex-1 tw-font-bold`}>金多寶攪珠期數</Box>
+                      <Box className={`tw-flex-1 tw-font-bold`}>24/103 MAF 中秋金多寶b</Box>
+                    </Box>
+                    <Box className={`tw-px-2 tw-flex tw-py-1`}>
+                      <Box className={`tw-flex-1 tw-font-bold`}>攪珠日期</Box>
+                      <Box className={`tw-flex-1 tw-font-bold`}>17/09/2024 (星期二)</Box>
+                    </Box>
+                    <Box className={`tw-px-2 tw-flex tw-py-1`}>
+                      <Box className={`tw-flex-1 tw-font-bold`}>截止售票時間</Box>
+                      <Box className={`tw-flex-1 tw-font-bold`}>晚上 9:15</Box>
+                    </Box>
+                    <Box className={`tw-px-2 tw-flex tw-py-1`}>
+                      <Box className={`tw-flex-1 tw-font-bold`}>投注額</Box>
+                      <Box className={`tw-flex-1 tw-font-bold`}>$24,304,680</Box>
+                    </Box>
                   </Box>
-                  <Box className={`tw-px-2 tw-flex tw-py-1`}>
-                    <Box className={`tw-flex-1 tw-font-bold`}>攪珠日期</Box>
-                    <Box className={`tw-flex-1 tw-font-bold`}>b</Box>
-                  </Box>
-                  <Box className={`tw-px-2 tw-flex tw-py-1`}>
-                    <Box className={`tw-flex-1 tw-font-bold`}>截止售票時間</Box>
-                    <Box className={`tw-flex-1 tw-font-bold`}>a</Box>
-                  </Box>
-                  <Box className={`tw-px-2 tw-flex tw-py-1`}>
-                    <Box className={`tw-flex-1 tw-font-bold`}>投注額</Box>
-                    <Box className={`tw-flex-1 tw-font-bold`}>b</Box>
+                  <Box>
+                    <Box className={`tw-px-2`}>
+                      <Box>
+                        <Box className={`tw-px-2 tw-flex tw-py-1`}>
+                          <Box className={`tw-flex-1 tw-font-bold`}>多寶 / 金多寶</Box>
+                          <Box className={`tw-flex-1 tw-font-bold`}>$55,000,000</Box>
+                        </Box>
+                        <Box className={`tw-px-2 tw-flex tw-py-1`}>
+                          <Box className={`tw-flex-1 tw-font-bold`}>估計頭獎基金</Box>
+                          <Box className={`tw-flex-1 tw-font-bold`}>$80,000,000</Box>
+                        </Box>
+                      </Box>
+                    </Box>
                   </Box>
                 </Box>
-                <Box>
-                  <Box className={`tw-px-2`}>b</Box>
-                </Box>
               </Box>
-            </Box>
+              <Box className="tw-bg-white tw-rounded-md tw-mt-2">
+                <Box className={`tw-p-2 tw-border-b tw-border-gray-200`}>
+                  <Box className={`tw-flex tw-justify-between tw-items-center`}>
+                    <Box className={`tw-flex tw-items-center`}>
+                      <button className={``} onClick={() => setOpenTip((prev) => !prev)}>
+                        <img src={openTip ? arrowUp : arrowDown} alt="arrowUp" />
+                      </button>
+                      選擇號碼方法
+                    </Box>
+                    <button className={`tw-bg-yellow-300 tw-rounded-full tw-p-2 tw-text-sm tw-font-bold`}>添加到投注區</button>
+                  </Box>
+                  {openTip && (
+                    <Box>
+                      <span>選擇號碼請按滑鼠一次</span>
+                      <br />
+                      <span>取消已選號碼請在下面的注項中按滑鼠一次</span>
+                    </Box>
+                  )}
+                </Box>
+                <Container maxWidth="md" className={`tw-m-2 tw-py-4`}>
+                  {/* {pickNumberList.map((i) => (
+                    <>
+                      {i}
+                      <br />
+                    </>
+                  ))} */}
+                  <Box className={`tw-grid-cols-10 tw-grid tw-place-items-center tw-gap-y-4`}>
+                    {generateArray(49).map((i) => (
+                      <>
+                        {pickNumberList[pickNumberIndex].includes(i) && pickNumberList[pickNumberIndex].length != 6 && (
+                          <>
+                            <button onClick={() => handleNumber(i)}>
+                              <img src={getImageURL(i)} />
+                            </button>
+                          </>
+                        )}
+                        {(!pickNumberList[pickNumberIndex].includes(i) || pickNumberList[pickNumberIndex].length == 6) && (
+                          <Box className={`tw-min-h-[60px] tw-flex tw-justify-center tw-items-center`}>
+                            <Box
+                              onClick={() => handleNumber(i)}
+                              className={`${getColor(
+                                i,
+                              )} tw-border-2 tw-font-bold tw-text-xl tw-cursor-pointer  tw-gap-5 tw-rounded-full tw-cols-span-1 tw-w-[50px] tw-h-[50px] tw-flex tw-justify-center tw-items-center`}>
+                              {i}
+                            </Box>
+                          </Box>
+                        )}
+                      </>
+                    ))}
+                  </Box>
+                  {/* <Grid container columns={10} gap={2}>
+                    {generateArray(49).map((i) => (
+                    <Grid size={1} className={`tw-border-2 tw-border-gray-50 tw-rounded-full tw-flex tw-justify-center tw-items-center !tw-basis-[50px] tw-h-[50px]`}>{i}</Grid>
+                    ))}
+                  </Grid> */}
+                </Container>
+              </Box>
+              <Box className={`tw-bg-white tw-rounded-md tw-mt-2 tw-p-2 tw-text-sm`}>
+                <Box className={`tw-border-b tw-border-gray-300 tw-py-2`}>已選號碼</Box>
+                {pickNumberList.map((list, listIndex) => (
+                  <Box className={`tw-py-2`}>
+                    {list
+                      .sort((a, b) => a - b)
+                      .map((i, index) => (
+                        <button onClick={() => handleDeleteNumber(i, listIndex, index)}>
+                          <img src={getImageURL(i)} />
+                        </button>
+                      ))}
+                  </Box>
+                ))}
+              </Box>
+            </main>
           </Box>
         </Grid>
         <Grid size={2.5} className={`tw-bg-red-400`}>
